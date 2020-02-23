@@ -40,4 +40,42 @@ const getAllPosts = (req, res, next) => {
 	res.json({ posts: posts });
 };
 
+// @type -- GET
+// @path -- /api/posts/:pid
+// @desc -- path to get a single posts by id
+const getASinglePostsById = (req, res, next) => {
+	const postId = req.params.pid;
+
+	const post = DUMMY_POSTS.find((p) => {
+		return p.id === postId;
+	});
+
+	if (!post || post.length === 0) {
+		throw new HttpError('Could Not Find A Post For That Id', 404);
+	}
+
+	res.json({ post: post });
+};
+
+// @type -- GET
+// @path -- /api/posts/user/:uid
+// @desc -- path to get posts created by a user
+const getAllPostsByAUser = (req, res, next) => {
+	const userId = req.params.uid;
+
+	const posts = DUMMY_POSTS.filter((p) => {
+		return p.creator === userId;
+	});
+
+	if (!posts || posts.length === 0) {
+		return next(
+			new HttpError('Could Not Find Any Posts For The Provided User ID', 404)
+		);
+	}
+
+	res.json({ posts: posts });
+};
+
 exports.getAllPosts = getAllPosts;
+exports.getASinglePostsById = getASinglePostsById;
+exports.getAllPostsByAUser = getAllPostsByAUser;
