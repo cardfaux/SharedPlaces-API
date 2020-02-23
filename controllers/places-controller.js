@@ -16,6 +16,9 @@ const DUMMY_PLACES = [
 	}
 ];
 
+// @type -- GET
+// @path -- /api/places/:pid
+// @desc -- path to get a place by it's id
 const getPlaceById = (req, res, next) => {
 	const placeId = req.params.pid;
 
@@ -30,6 +33,9 @@ const getPlaceById = (req, res, next) => {
 	res.json({ place: place });
 };
 
+// @type -- GET
+// @path -- /api/places/user/:uid
+// @desc -- path to get a place by user id
 const getPlaceByUserId = (req, res, next) => {
 	const userId = req.params.uid;
 
@@ -46,6 +52,9 @@ const getPlaceByUserId = (req, res, next) => {
 	res.json({ place: place });
 };
 
+// @type -- POST
+// @path -- /api/places
+// @desc -- path to create a place
 const createPlace = (req, res, next) => {
 	const { title, description, coordinates, address, creator } = req.body;
 
@@ -63,6 +72,18 @@ const createPlace = (req, res, next) => {
 	res.status(201).json({ place: createdPlace });
 };
 
+// @type -- PATCH
+// @path -- /api/places/:pid
+// @desc -- path to update a place by the id
+const updatePlaceById = (req, res, next) => {};
+
+// @type -- DELETE
+// @path -- /api/places/:pid
+// @desc -- path to delete a place by the id
+const deletePlaceById = (req, res, next) => {};
+
 exports.getPlaceById = getPlaceById;
 exports.getPlaceByUserId = getPlaceByUserId;
 exports.createPlace = createPlace;
+exports.updatePlaceById = updatePlaceById;
+exports.deletePlaceById = deletePlaceById;
