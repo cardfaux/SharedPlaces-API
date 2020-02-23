@@ -9,6 +9,7 @@ const app = express();
 
 app.use(bodyParser.json());
 
+// Bringing in the routes and prefixing the routes
 app.use('/api/places', placesRoutes);
 app.use('/api/users', usersRoutes);
 
