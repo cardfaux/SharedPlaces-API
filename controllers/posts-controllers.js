@@ -1,3 +1,6 @@
+const uuid = require('uuid/v4');
+const { validationResult } = require('express-validator');
+
 const HttpError = require('../models/http-error');
 
 let DUMMY_POSTS = [
@@ -76,6 +79,33 @@ const getAllPostsByAUser = (req, res, next) => {
 	res.json({ posts: posts });
 };
 
+// @type -- POST
+// @path -- /api/posts
+// @desc -- path to create a post
+const createAPost = (req, res, next) => {
+	const errors = validationResult(req);
+	if (!errors.isEmpty()) {
+		return next(
+			new HttpError('Invalid Inputs Passed, Please Check Your Data', 422)
+		);
+	}
+
+	const { title, date, post, creator } = req.body;
+
+	const createdPost = {
+		id: uuid(),
+		title: title,
+		date: date,
+		post: post,
+		creator: creator
+	};
+
+	DUMMY_POSTS.push(createdPost);
+
+	res.status(201).json({ post: createdPost });
+};
+
 exports.getAllPosts = getAllPosts;
 exports.getASinglePostsById = getASinglePostsById;
 exports.getAllPostsByAUser = getAllPostsByAUser;
+exports.createAPost = createAPost;
