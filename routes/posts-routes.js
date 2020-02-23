@@ -23,4 +23,18 @@ router.post(
 	postsControllers.createAPost
 );
 
+router.patch(
+	'/:pid',
+	[
+		(check('title')
+			.not()
+			.isEmpty(),
+		check('post').isLength({ min: 10 }))
+	],
+	postsControllers.updatePostById
+);
+
+router.delete('/:pid', postsControllers.deletePostById);
+//-------------------------Posts Routes Ends-----------------------------
+
 module.exports = router;

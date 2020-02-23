@@ -105,7 +105,44 @@ const createAPost = (req, res, next) => {
 	res.status(201).json({ post: createdPost });
 };
 
+// @type -- PATCH
+// @path -- /api/posts/:pid
+// @desc -- path to update a post by the id
+const updatePostById = (req, res, next) => {
+	const errors = validationResult(req);
+	if (!errors.isEmpty()) {
+		throw new HttpError('Invalid Inputs Passed, Please Check Your Data', 422);
+	}
+
+	const { title, post } = req.body;
+	const postId = req.params.pid;
+
+	const updatedPost = { ...DUMMY_POSTS.find((p) => p.id === postId) };
+	const postIndex = DUMMY_POSTS.findIndex((p) => p.id === postId);
+
+	updatedPost.title = title;
+	updatedPost.post = post;
+
+	DUMMY_POSTS[postIndex] = updatedPost;
+
+	res.status(200).json({ post: updatedPost });
+};
+
+// @type -- Delete
+// @path -- /api/posts/:pid
+// @desc -- path to delete a post by the id
+const deletePostById = (req, res, next) => {
+	const postId = req.params.pid;
+	if (!DUMMY_POSTS.find((p) => p.id === postId)) {
+		throw new HttpError('Could Not Find A Place For That ID', 404);
+	}
+	DUMMY_POSTS = DUMMY_POSTS.filter((p) => p.id !== postId);
+	res.status(200).json({ message: 'Deleted Post Successfully!' });
+};
+
 exports.getAllPosts = getAllPosts;
 exports.getASinglePostsById = getASinglePostsById;
 exports.getAllPostsByAUser = getAllPostsByAUser;
 exports.createAPost = createAPost;
+exports.updatePostById = updatePostById;
+exports.deletePostById = deletePostById;
