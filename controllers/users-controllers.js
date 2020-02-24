@@ -1,5 +1,4 @@
 const { validationResult } = require('express-validator');
-const uuid = require('uuid/v4');
 
 const HttpError = require('../models/http-error');
 
@@ -60,7 +59,8 @@ const signup = async (req, res, next) => {
 		image:
 			'http://www.dutragroup.com/cms/upload/people/photo/dutra-group-james-hagood_4.jpg',
 		password,
-		places: []
+		places: [],
+		posts: []
 	});
 
 	try {
