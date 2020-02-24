@@ -44,7 +44,7 @@ app.use((error, req, res, next) => {
 mongoose
 	.connect(
 		'mongodb+srv://jameshagood:Fsuore1234@chatterbox-duf9f.mongodb.net/sharedPlaces?retryWrites=true&w=majority',
-		{ useNewUrlParser: true, useUnifiedTopology: true }
+		{ useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true }
 	)
 	.then(() => {
 		app.listen(5000, () => console.log('API IS RUNNING ON PORT 5000.....'));

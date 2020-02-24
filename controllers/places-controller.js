@@ -99,7 +99,7 @@ const createPlace = async (req, res, next) => {
 		await createdPlace.save();
 	} catch (err) {
 		const error = new HttpError(
-			'Creating A Plae Failed, Please Try Again',
+			'Creating A Place Failed, Please Try Again',
 			500
 		);
 		return next(error);
@@ -114,7 +114,11 @@ const createPlace = async (req, res, next) => {
 const updatePlaceById = async (req, res, next) => {
 	const errors = validationResult(req);
 	if (!errors.isEmpty()) {
-		throw new HttpError('Invalid Inputs Passed, Please Check Your Data', 422);
+		// Can not Use Throw Inside Of An Async Function
+		//throw new HttpError('Invalid Inputs Passed, Please Check Your Data', 422);
+		return next(
+			new HttpError('Invalid Inputs Passed, Please Check Your Data', 422)
+		);
 	}
 
 	const { title, description } = req.body;
