@@ -81,20 +81,29 @@ const getASinglePostById = async (req, res, next) => {
 // @type -- GET
 // @path -- /api/posts/user/:uid
 // @desc -- path to get posts created by a user
-const getAllPostsByAUser = (req, res, next) => {
+const getAllPostsByAUser = async (req, res, next) => {
 	const userId = req.params.uid;
 
-	const posts = DUMMY_POSTS.filter((p) => {
-		return p.creator === userId;
-	});
+	let userWithPosts;
+	try {
+		userWithPosts = await User.findById(userId).populate('posts');
+	} catch (err) {
+		const error = new HttpError(
+			'Fetching Posts Failed, Please Try Again Later',
+			500
+		);
+		return next(error);
+	}
 
-	if (!posts || posts.length === 0) {
+	if (!userWithPosts || userWithPosts.posts.length === 0) {
 		return next(
-			new HttpError('Could Not Find Any Posts For The Provided User ID', 404)
+			new HttpError('Could Not Find Posts For The Provided User ID', 404)
 		);
 	}
 
-	res.json({ posts: posts });
+	res.json({
+		post: userWithPosts.posts.map((post) => post.toObject({ getters: true }))
+	});
 };
 
 // @type -- POST
