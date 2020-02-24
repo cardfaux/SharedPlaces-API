@@ -120,13 +120,12 @@ const createAPost = async (req, res, next) => {
 		);
 	}
 
-	const { title, post, creator } = req.body;
+	const { title, description, creator } = req.body;
 
 	// Instanciate Post Constructor
-
 	const createdPost = new Post({
 		title,
-		post,
+		description,
 		creator
 	});
 
@@ -177,24 +176,44 @@ const createAPost = async (req, res, next) => {
 // @type -- PATCH
 // @path -- /api/posts/:pid
 // @desc -- path to update a post by the id
-const updatePostById = (req, res, next) => {
+const updatePostById = async (req, res, next) => {
 	const errors = validationResult(req);
 	if (!errors.isEmpty()) {
-		throw new HttpError('Invalid Inputs Passed, Please Check Your Data', 422);
+		// Can not Use Throw Inside Of An Async Function
+		//throw new HttpError('Invalid Inputs Passed, Please Check Your Data', 422);
+		return next(
+			new HttpError('Invalid Inputs Passed, Please Check Your Data', 422)
+		);
 	}
 
-	const { title, post } = req.body;
+	const { title, description } = req.body;
 	const postId = req.params.pid;
 
-	const updatedPost = { ...DUMMY_POSTS.find((p) => p.id === postId) };
-	const postIndex = DUMMY_POSTS.findIndex((p) => p.id === postId);
+	let post;
+	try {
+		post = await Post.findById(postId);
+	} catch (err) {
+		const error = new HttpError(
+			'Something Went Wrong, Could Not Update Post',
+			500
+		);
+		return next(error);
+	}
 
-	updatedPost.title = title;
-	updatedPost.post = post;
+	post.title = title;
+	post.description = description;
 
-	DUMMY_POSTS[postIndex] = updatedPost;
+	try {
+		await post.save();
+	} catch (err) {
+		const error = new HttpError(
+			'Something Went Wrong, Could Not Save The Updated Post',
+			500
+		);
+		return next(error);
+	}
 
-	res.status(200).json({ post: updatedPost });
+	res.status(200).json({ post: post.toObject({ getters: true }) });
 };
 
 // @type -- Delete
