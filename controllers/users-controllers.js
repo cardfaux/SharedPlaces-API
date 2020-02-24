@@ -6,15 +6,6 @@ const HttpError = require('../models/http-error');
 // Bring In The User Model
 const User = require('../models/user');
 
-const DUMMY_USERS = [
-	{
-		id: 'u1',
-		name: 'James Hagood',
-		email: 'test@test.com',
-		password: 'testers'
-	}
-];
-
 // @type -- GET
 // @path -- /api/users
 // @desc -- path to get all the users
