@@ -219,12 +219,35 @@ const updatePostById = async (req, res, next) => {
 // @type -- Delete
 // @path -- /api/posts/:pid
 // @desc -- path to delete a post by the id
-const deletePostById = (req, res, next) => {
+const deletePostById = async (req, res, next) => {
 	const postId = req.params.pid;
-	if (!DUMMY_POSTS.find((p) => p.id === postId)) {
-		throw new HttpError('Could Not Find A Place For That ID', 404);
+	let post;
+
+	try {
+		post = await Post.findById(postId).populate('creator');
+	} catch (err) {
+		const error = new HttpError('Something Went Wrong Deleteing The Post', 500);
+		return next(error);
 	}
-	DUMMY_POSTS = DUMMY_POSTS.filter((p) => p.id !== postId);
+
+	if (!post) {
+		const error = new HttpError('Could Not Find A Post For The Id', 404);
+		return next(error);
+	}
+
+	try {
+		const sess = await mongoose.startSession();
+		sess.startTransaction();
+		await post.remove({ session: sess });
+		// Pull Will Automatically Remove The Id
+		post.creator.posts.pull(post);
+		await post.creator.save({ session: sess });
+		await sess.commitTransaction();
+	} catch (err) {
+		const error = new HttpError('Something Went Wrong Deleteing The Post', 500);
+		return next(error);
+	}
+
 	res.status(200).json({ message: 'Deleted Post Successfully!' });
 };
 
