@@ -38,14 +38,17 @@ let DUMMY_POSTS = [
 // @type -- GET
 // @path -- /api/posts
 // @desc -- path to get all the posts
-const getAllPosts = (req, res, next) => {
-	const posts = DUMMY_POSTS;
+const getAllPosts = async (req, res, next) => {
+	let posts;
 
-	if (posts.length === 0) {
-		throw new HttpError('Could Not Find Any Posts', 404);
+	try {
+		posts = await Post.find({});
+	} catch (err) {
+		const error = new HttpError('Fetching Posts Failed', 500);
+		return next(error);
 	}
 
-	res.json({ posts: posts });
+	res.json({ posts: posts.map((post) => post.toObject({ getters: true })) });
 };
 
 // @type -- GET
