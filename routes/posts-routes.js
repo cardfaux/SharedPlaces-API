@@ -8,7 +8,7 @@ const router = express.Router();
 //-------------------------Posts Routes Starts------------------------
 router.get('/', postsControllers.getAllPosts);
 
-router.get('/:pid', postsControllers.getASinglePostsById);
+router.get('/:pid', postsControllers.getASinglePostById);
 
 router.get('/user/:uid', postsControllers.getAllPostsByAUser);
 

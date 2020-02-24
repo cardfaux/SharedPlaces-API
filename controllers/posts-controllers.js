@@ -3,6 +3,11 @@ const { validationResult } = require('express-validator');
 
 const HttpError = require('../models/http-error');
 
+// Bring In The Post Model
+const Post = require('../models/post');
+// Bring In The User Model
+const User = require('../models/user');
+
 let DUMMY_POSTS = [
 	{
 		id: 'a1',
@@ -46,18 +51,31 @@ const getAllPosts = (req, res, next) => {
 // @type -- GET
 // @path -- /api/posts/:pid
 // @desc -- path to get a single posts by id
-const getASinglePostsById = (req, res, next) => {
+const getASinglePostById = async (req, res, next) => {
 	const postId = req.params.pid;
 
-	const post = DUMMY_POSTS.find((p) => {
-		return p.id === postId;
-	});
-
-	if (!post || post.length === 0) {
-		throw new HttpError('Could Not Find A Post For That Id', 404);
+	let post;
+	try {
+		post = await Post.findById(postId);
+	} catch (err) {
+		const error = new HttpError(
+			'Something Went Wrong, Could Not Find Post',
+			500
+		);
+		return next(error);
 	}
 
-	res.json({ post: post });
+	if (!post || post.length === 0) {
+		const error = new HttpError(
+			'Could Not Find A Post For The Provided ID',
+			404
+		);
+		return next(error);
+	}
+
+	// Turns The Place Object Into A Normal JavaScript Object
+	// Getters: True Turns The Mongoose Model _id to id
+	res.json({ post: post.toObject({ getters: true }) });
 };
 
 // @type -- GET
@@ -141,7 +159,7 @@ const deletePostById = (req, res, next) => {
 };
 
 exports.getAllPosts = getAllPosts;
-exports.getASinglePostsById = getASinglePostsById;
+exports.getASinglePostById = getASinglePostById;
 exports.getAllPostsByAUser = getAllPostsByAUser;
 exports.createAPost = createAPost;
 exports.updatePostById = updatePostById;
