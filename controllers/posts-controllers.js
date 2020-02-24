@@ -100,7 +100,7 @@ const getAllPostsByAUser = (req, res, next) => {
 // @type -- POST
 // @path -- /api/posts
 // @desc -- path to create a post
-const createAPost = (req, res, next) => {
+const createAPost = async (req, res, next) => {
 	const errors = validationResult(req);
 	if (!errors.isEmpty()) {
 		return next(
@@ -108,17 +108,56 @@ const createAPost = (req, res, next) => {
 		);
 	}
 
-	const { title, date, post, creator } = req.body;
+	const { title, post, creator } = req.body;
 
-	const createdPost = {
-		id: uuid(),
-		title: title,
-		date: date,
-		post: post,
-		creator: creator
-	};
+	// Instanciate Post Constructor
 
-	DUMMY_POSTS.push(createdPost);
+	const createdPost = new Post({
+		title,
+		post,
+		creator
+	});
+
+	let user;
+	try {
+		user = await User.findById(creator);
+	} catch (err) {
+		const error = new HttpError(
+			'Creating A New Post Failed, Please Try Again',
+			500
+		);
+		return next(error);
+	}
+
+	// Make Sure The User Isn't Already In The Database
+	if (!user) {
+		const error = new HttpError('Could Not Find A User For Provided Id', 404);
+		return next(error);
+	}
+
+	console.log(user);
+
+	try {
+		// Current Session
+		const sess = await mongoose.startSession();
+		// Start Transaction In The Current Session
+		sess.startTransaction();
+		// Tell Mongoose Whst To Do
+		// Create Our Place And Create An Unique Id
+		await createdPost.save({ session: sess });
+		// Add The Post Id To Our User As Well
+		// This Push Is Not The Standard Push, Allows Mongoose To Establish A Connection Between The Models
+		// Adds The PostId To The Places Field Of The User
+		user.posts.push(createdPost);
+		await user.save({ session: sess });
+		await sess.commitTransaction();
+	} catch (err) {
+		const error = new HttpError(
+			'Creating A Post Failed, Please Try Again',
+			500
+		);
+		return next(error);
+	}
 
 	res.status(201).json({ post: createdPost });
 };
