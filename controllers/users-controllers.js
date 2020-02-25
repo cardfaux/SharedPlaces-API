@@ -56,8 +56,7 @@ const signup = async (req, res, next) => {
 	const createdUser = new User({
 		name,
 		email,
-		image:
-			'http://www.dutragroup.com/cms/upload/people/photo/dutra-group-james-hagood_4.jpg',
+		image: req.file.path,
 		password,
 		places: [],
 		posts: []

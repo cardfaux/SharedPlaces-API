@@ -1,3 +1,7 @@
+// Core NodeJS Module
+const fs = require('fs');
+// Core NodeJS Module
+
 // Packages
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -44,6 +48,12 @@ app.use((req, res, next) => {
 });
 
 app.use((error, req, res, next) => {
+	// Rollback File Upload If We Get An Error
+	if (req.file) {
+		fs.unlink(req.file.path, (err) => {
+			console.log(err);
+		});
+	}
 	if (res.headersSent) {
 		return next(error);
 	}
