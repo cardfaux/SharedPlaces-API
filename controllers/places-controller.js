@@ -101,7 +101,7 @@ const createPlace = async (req, res, next) => {
 		description,
 		address,
 		location: coordinates,
-		image: 'http://media1.santabanta.com/full1/Countries/Places/places-92a.jpg',
+		image: req.file.path,
 		creator
 	});
 
