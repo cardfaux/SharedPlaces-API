@@ -1,5 +1,6 @@
 // Core NodeJS Module
 const fs = require('fs');
+const path = require('path');
 // Core NodeJS Module
 
 // Packages
@@ -22,6 +23,10 @@ const app = express();
 // Body Parser To Parse The Incoming Request Bodies
 app.use(bodyParser.json());
 // Body Parser To Parse The Incoming Request Bodies
+
+// Parse The Image Uploads
+app.use('/uploads/images', express.static(path.join('uploads', 'images')));
+// Parse The Image Uploads
 
 // CORS Middleware to attatch to every response
 app.use((req, res, next) => {
