@@ -92,18 +92,18 @@ const createAPost = async (req, res, next) => {
 		);
 	}
 
-	const { title, description, creator } = req.body;
+	const { title, description } = req.body;
 
 	// Instanciate Post Constructor
 	const createdPost = new Post({
 		title,
 		description,
-		creator
+		creator: req.userData.userId
 	});
 
 	let user;
 	try {
-		user = await User.findById(creator);
+		user = await User.findById(req.userData.userId);
 	} catch (err) {
 		const error = new HttpError(
 			'Creating A New Post Failed, Please Try Again',

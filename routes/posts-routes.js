@@ -2,6 +2,7 @@ const express = require('express');
 const { check } = require('express-validator');
 
 const postsControllers = require('../controllers/posts-controllers');
+const checkAuth = require('../middleware/check-auth');
 
 const router = express.Router();
 
@@ -12,13 +13,15 @@ router.get('/:pid', postsControllers.getASinglePostById);
 
 router.get('/user/:uid', postsControllers.getAllPostsByAUser);
 
+router.use(checkAuth);
+
 router.post(
 	'/',
 	[
 		check('title')
 			.not()
 			.isEmpty(),
-		check('post').isLength({ min: 10 })
+		check('description').isLength({ min: 10 })
 	],
 	postsControllers.createAPost
 );
