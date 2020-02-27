@@ -27,7 +27,7 @@ router.post(
 );
 
 router.patch(
-	'/:pid',
+	'/edit/:pid',
 	[
 		(check('title')
 			.not()
