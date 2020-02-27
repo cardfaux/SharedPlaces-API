@@ -32,7 +32,7 @@ router.patch(
 		(check('title')
 			.not()
 			.isEmpty(),
-		check('post').isLength({ min: 10 }))
+		check('description').isLength({ min: 10 }))
 	],
 	postsControllers.updatePostById
 );

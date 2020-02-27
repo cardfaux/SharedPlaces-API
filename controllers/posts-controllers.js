@@ -150,14 +150,14 @@ const createAPost = async (req, res, next) => {
 // @path -- /api/posts/edit/:pid
 // @desc -- path to update a post by the id
 const updatePostById = async (req, res, next) => {
-	// const errors = validationResult(req);
-	// if (!errors.isEmpty()) {
-	// 	// Can not Use Throw Inside Of An Async Function
-	// 	//throw new HttpError('Invalid Inputs Passed, Please Check Your Data', 422);
-	// 	return next(
-	// 		new HttpError('Invalid Inputs Passed, Please Check Your Data', 422)
-	// 	);
-	// }
+	const errors = validationResult(req);
+	if (!errors.isEmpty()) {
+		// Can not Use Throw Inside Of An Async Function
+		//throw new HttpError('Invalid Inputs Passed, Please Check Your Data', 422);
+		return next(
+			new HttpError('Invalid Inputs Passed, Please Check Your Data', 422)
+		);
+	}
 
 	const { title, description } = req.body;
 	const postId = req.params.pid;
