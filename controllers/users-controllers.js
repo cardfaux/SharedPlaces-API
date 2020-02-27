@@ -86,7 +86,11 @@ const signup = async (req, res, next) => {
 	let token;
 	try {
 		token = jwt.sign(
-			{ userId: createdUser.id, email: createdUser.email },
+			{
+				userId: createdUser.id,
+				email: createdUser.email,
+				userName: createdUser.name
+			},
 			'supsecret213_dont321_tell123',
 			{ expiresIn: '1h' }
 		);
@@ -98,9 +102,12 @@ const signup = async (req, res, next) => {
 		return next(error);
 	}
 
-	res
-		.status(201)
-		.json({ userId: createdUser.id, email: createdUser.email, token: token });
+	res.status(201).json({
+		userId: createdUser.id,
+		email: createdUser.email,
+		userName: createdUser.name,
+		token: token
+	});
 };
 
 // @type -- POST
@@ -144,7 +151,11 @@ const login = async (req, res, next) => {
 	let token;
 	try {
 		token = jwt.sign(
-			{ userId: existingUser.id, email: existingUser.email },
+			{
+				userId: existingUser.id,
+				email: existingUser.email,
+				userName: existingUser.name
+			},
 			'supsecret213_dont321_tell123',
 			{ expiresIn: '1h' }
 		);
@@ -156,6 +167,7 @@ const login = async (req, res, next) => {
 	res.json({
 		userId: existingUser.id,
 		email: existingUser.email,
+		userName: existingUser.name,
 		token: token
 	});
 };

@@ -21,6 +21,7 @@ const app = express();
 // Express
 
 // Body Parser To Parse The Incoming Request Bodies
+// Could Also Do app.use(express.json({ extended: false }))
 app.use(bodyParser.json());
 // Body Parser To Parse The Incoming Request Bodies
 
