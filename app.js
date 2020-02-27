@@ -75,13 +75,7 @@ mongoose
 		{ useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true }
 	)
 	.then(() => {
-		const server = app.listen(5000, () =>
-			console.log('API IS RUNNING ON PORT 5000.....')
-		);
-		const io = require('socket.io')(server);
-		io.on('connection', (socket) => {
-			console.log('Socket.IO Client Connected...');
-		});
+		app.listen(5000, () => console.log('API IS RUNNING ON PORT 5000.....'));
 	})
 	.then(() => {
 		console.log('MongoDB Connected.....');
