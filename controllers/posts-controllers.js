@@ -96,11 +96,13 @@ const createAPost = async (req, res, next) => {
 	const { title, description } = req.body;
 
 	// Instanciate Post Constructor
-	const createdPost = new Post({
-		title,
-		description,
-		creator: req.userData.userId
-	});
+	// const createdPost = new Post({
+	// 	title,
+	// 	description,
+	// 	name: user.name,
+	// 	avatar: user.image,
+	// 	creator: req.userData.userId
+	// });
 
 	let user;
 	try {
@@ -112,6 +114,14 @@ const createAPost = async (req, res, next) => {
 		);
 		return next(error);
 	}
+
+	const createdPost = new Post({
+		title,
+		description,
+		name: user.name,
+		avatar: user.image,
+		creator: req.userData.userId
+	});
 
 	// Make Sure The User Isn't Already In The Database
 	if (!user) {
