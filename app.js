@@ -71,7 +71,7 @@ app.use((error, req, res, next) => {
 // Connection To The DataBase And Starting The Server...
 mongoose
 	.connect(
-		'mongodb+srv://jameshagood:Fsuore1234@chatterbox-duf9f.mongodb.net/sharedPlaces?retryWrites=true&w=majority',
+		`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@chatterbox-duf9f.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`,
 		{ useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true }
 	)
 	.then(() => {

@@ -91,7 +91,7 @@ const signup = async (req, res, next) => {
 				email: createdUser.email,
 				userName: createdUser.name
 			},
-			'supsecret213_dont321_tell123',
+			process.env.JWT_KEY,
 			{ expiresIn: '1h' }
 		);
 	} catch (err) {
@@ -156,7 +156,7 @@ const login = async (req, res, next) => {
 				email: existingUser.email,
 				userName: existingUser.name
 			},
-			'supsecret213_dont321_tell123',
+			process.env.JWT_KEY,
 			{ expiresIn: '1h' }
 		);
 	} catch (err) {
